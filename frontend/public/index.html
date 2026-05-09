@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folio — A Place for Words</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Folio</a>
+      <div class="nav-links">
+        <a href="/" class="nav-link active" data-page="home">Home</a>
+        <a href="/articles" class="nav-link" data-page="articles">Articles</a>
+        <a href="/about" class="nav-link" data-page="about">About</a>
+      </div>
+      <button class="nav-search-btn" id="searchToggle" aria-label="Search">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search articles…" autocomplete="off">
+      <button class="search-close" id="searchClose">✕</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="app">
+    <!-- dynamically rendered -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">Folio</span>
+        <p class="footer-tagline">A place for words that matter.</p>
+      </div>
+      <div class="footer-tags" id="footerTags"></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Folio</span>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/router.js"></script>
+  <script src="/js/pages/home.js"></script>
+  <script src="/js/pages/article.js"></script>
+  <script src="/js/pages/articles.js"></script>
+  <script src="/js/pages/about.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
