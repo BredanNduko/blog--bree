@@ -50,8 +50,8 @@ app.use((err, req, res, next) => {
 async function seedAdmin() {
   await getDb(); // ensure DB is initialized
 
-  const existing = queryOne('SELECT id FROM users WHERE email = ?', ['admin@blog.com']);
-  if (!existing) {
+  const existingAdmin = queryOne('SELECT id FROM users WHERE email = ?', ['admin@blog.com']);
+  if (!existingAdmin) {
     const hash = await bcrypt.hash('admin123', 12);
     const id = uuidv4();
     run(
@@ -61,10 +61,35 @@ async function seedAdmin() {
     console.log('\n✅  Admin user seeded');
     console.log('   Email:    admin@blog.com');
     console.log('   Password: admin123');
-    console.log('   Change this password after first login!\n');
 
     // Seed sample articles
     await seedSampleArticles(id);
+  }
+
+  const existingBrendah = queryOne('SELECT id FROM users WHERE email = ?', ['brendah@blog.com']);
+  if (!existingBrendah) {
+    const brendahHash = await bcrypt.hash('Brendah123', 12);
+    const brendahId = uuidv4();
+    run(
+      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES (?, ?, ?, ?, ?, ?)',
+      [brendahId, 'brendah@blog.com', brendahHash, 'Brendah', 'Content creator and writer.', 'writer']
+    );
+    console.log('✅  Brendah user seeded');
+    console.log('   Email:    brendah@blog.com');
+    console.log('   Password: Brendah123\n');
+  }
+
+  const existingMichael = queryOne('SELECT id FROM users WHERE email = ?', ['michael@blog.com']);
+  if (!existingMichael) {
+    const michaelHash = await bcrypt.hash('Michael@789', 12);
+    const michaelId = uuidv4();
+    run(
+      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES (?, ?, ?, ?, ?, ?)',
+      [michaelId, 'michael@blog.com', michaelHash, 'Michael Chen', 'Technology and business writer.', 'writer']
+    );
+    console.log('✅  Michael user seeded');
+    console.log('   Email:    michael@blog.com');
+    console.log('   Password: Michael@789\n');
   }
 }
 
