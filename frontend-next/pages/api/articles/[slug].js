@@ -1,6 +1,6 @@
-import { getDb, query, queryOne } from '../../../lib/database';
+const { getDb, query, queryOne } = require('../../../lib/database');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   await getDb();
   const { slug } = req.query;
   
@@ -11,4 +11,4 @@ export default async function handler(req, res) {
   const related = query('SELECT * FROM articles WHERE status = ? AND id != ? ORDER BY views DESC LIMIT 3', ['published', article.id]);
   
   res.json({ ...article, tags, related });
-}
+};

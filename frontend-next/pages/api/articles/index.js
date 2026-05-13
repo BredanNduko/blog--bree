@@ -1,6 +1,6 @@
-import { getDb, query, queryOne } from '../../../lib/database';
+const { getDb, query } = require('../../../lib/database');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   await getDb();
   const { page = 1, limit = 6, tag, search } = req.query;
   const offset = (parseInt(page) - 1) * parseInt(limit);
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   let sql = 'SELECT * FROM articles WHERE status = ?';
   let params = ['published'];
   let joins = '';
-  let where = [];
+  const where = [];
 
   if (tag) { joins = ' JOIN article_tags at ON articles.id = at.article_id JOIN tags t ON at.tag_id = t.id'; where.push('t.slug = ?'); params.push(tag); }
   if (search) { where.push('(title LIKE ? OR excerpt LIKE ?)'); params.push(`%${search}%`, `%${search}%`); }
@@ -17,4 +17,4 @@ export default async function handler(req, res) {
   params.push(parseInt(limit), offset);
   
   res.json(query(sql, params));
-}
+};

@@ -1,6 +1,7 @@
-import { getDb, query } from '../../../lib/database';
+const { getDb, query, queryOne } = require('../../../lib/database');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   await getDb();
-  res.json(query('SELECT * FROM articles WHERE status = ? ORDER BY views DESC LIMIT 3', ['published']));
-}
+  const articles = query('SELECT * FROM articles WHERE status = ? ORDER BY views DESC LIMIT 3', ['published']);
+  res.json(articles);
+};

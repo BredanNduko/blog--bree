@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
 
-export function generateToken(user) {
+function generateToken(user) {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     JWT_SECRET,
@@ -10,7 +10,7 @@ export function generateToken(user) {
   );
 }
 
-export function requireAuth(handler) {
+function requireAuth(handler) {
   return async (req, res) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -27,3 +27,5 @@ export function requireAuth(handler) {
     }
   };
 }
+
+module.exports = { generateToken, requireAuth };

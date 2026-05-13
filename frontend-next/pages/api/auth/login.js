@@ -1,8 +1,10 @@
-import bcrypt from 'bcryptjs';
-import { queryOne } from '../../../lib/database';
-import { generateToken } from '../../../lib/auth';
+const bcrypt = require('bcryptjs');
+const { getDb, queryOne } = require('../../../lib/database');
+const { generateToken } = require('../../../lib/auth');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  await getDb();
+  
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { email, password } = req.body;
@@ -19,4 +21,4 @@ export default async function handler(req, res) {
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
-}
+};

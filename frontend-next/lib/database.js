@@ -1,14 +1,16 @@
-import initSqlJs from 'sql.js';
-import fs from 'fs';
-import path from 'path';
+const initSqlJs = require('sql.js/dist/sql-wasm.js');
+const fs = require('fs');
+const path = require('path');
 
 const DB_PATH = path.join(process.cwd(), 'blog.db');
 let db = null;
 
-export async function getDb() {
+async function getDb() {
   if (db) return db;
   
-  const SQL = await initSqlJs();
+  const SQL = await initSqlJs({
+    locateFile: file => 'https://sql.js.org/js/sql-wasm.wasm'
+  });
   
   if (fs.existsSync(DB_PATH)) {
     const fileBuffer = fs.readFileSync(DB_PATH);
@@ -50,22 +52,30 @@ function initSchema() {
   saveDb();
 }
 
-export function saveDb() {
+function saveDb() {
   if (db) {
     const data = db.export();
     fs.writeFileSync(DB_PATH, Buffer.from(data));
   }
 }
 
-export const query = (sql, params = []) => {
+function query(sql, params = []) {
   const stmt = db.prepare(sql);
   stmt.bind(params);
   const rows = [];
   while (stmt.step()) rows.push(stmt.getAsObject());
   stmt.free();
   return rows;
-};
+}
 
-export const queryOne = (sql, params = []) => query(sql, params)[0] || null;
+function queryOne(sql, params = []) {
+  const rows = query(sql, params);
+  return rows[0] || null;
+}
 
-export const run = (sql, params = []) => { db.run(sql, params); saveDb(); };
+function run(sql, params = []) {
+  db.run(sql, params);
+  saveDb();
+}
+
+module.exports = { getDb, query, queryOne, run, saveDb };
