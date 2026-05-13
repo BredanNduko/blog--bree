@@ -1,12 +1,24 @@
-export default function Admin() {
+import fs from 'fs';
+import path from 'path';
+import Head from 'next/head';
+
+export default function Admin({ html }) {
   return (
-    <div dangerouslySetInnerHTML={{
-      __html: require('fs').readFileSync(require('path').join(process.cwd(), 'public', 'admin.html'), 'utf8')
-    }} />
+    <>
+      <Head>
+        <title>Admin - Folio Blog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+    </>
   );
 }
 
 export async function getServerSideProps() {
+  const htmlPath = path.join(process.cwd(), 'public', 'admin.html');
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  
   await import('../lib/database').then(({ getDb }) => getDb());
-  return { props: {} };
+  
+  return { props: { html } };
 }
