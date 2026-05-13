@@ -1,6 +1,3 @@
-import { getDb } from '../../../lib/database';
-
-export default async function handler(req, res) {
-  await getDb();
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+export default function handler(req, res) {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 }

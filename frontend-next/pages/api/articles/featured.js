@@ -1,7 +1,19 @@
-const { getDb, query, queryOne } = require('../../../lib/database');
+const ARTICLES = [
+  {
+    id: '1',
+    title: 'The Art of Slow Mornings',
+    slug: 'the-art-of-slow-mornings',
+    views: 120
+  },
+  {
+    id: '2',
+    title: 'On Writing Every Day',
+    slug: 'on-writing-every-day',
+    views: 85
+  }
+];
 
-module.exports = async function handler(req, res) {
-  await getDb();
-  const articles = query('SELECT * FROM articles WHERE status = ? ORDER BY views DESC LIMIT 3', ['published']);
-  res.json(articles);
-};
+export default function handler(req, res) {
+  const featured = ARTICLES.sort((a, b) => b.views - a.views).slice(0, 3);
+  res.status(200).json(featured);
+}

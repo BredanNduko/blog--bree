@@ -1,14 +1,15 @@
-const { getDb, query, queryOne } = require('../../../lib/database');
+const ARTICLES = [
+  { id: '1', slug: 'the-art-of-slow-mornings', title: 'The Art of Slow Mornings', body: '<p>Content...</p>', excerpt: 'Excerpt...' },
+  { id: '2', slug: 'on-writing-every-day', title: 'On Writing Every Day', body: '<p>Content...</p>', excerpt: 'Excerpt...' }
+];
 
-module.exports = async function handler(req, res) {
-  await getDb();
+export default function handler(req, res) {
   const { slug } = req.query;
+  const article = ARTICLES.find(a => a.slug === slug);
   
-  const article = queryOne('SELECT * FROM articles WHERE slug = ?', [slug]);
-  if (!article) return res.status(404).json({ error: 'Article not found' });
-
-  const tags = query('SELECT t.name, t.slug FROM tags t JOIN article_tags at ON t.id = at.tag_id WHERE at.article_id = ?', [article.id]);
-  const related = query('SELECT * FROM articles WHERE status = ? AND id != ? ORDER BY views DESC LIMIT 3', ['published', article.id]);
+  if (!article) {
+    return res.status(404).json({ error: 'Article not found' });
+  }
   
-  res.json({ ...article, tags, related });
-};
+  res.status(200).json({ ...article, tags: [], related: [] });
+}

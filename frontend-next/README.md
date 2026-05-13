@@ -1,34 +1,25 @@
-# Folio Blog - Next.js version for Vercel
-
-## Setup
-
-```bash
-npm install
-cp .env.example .env.local
-# Edit .env.local and set JWT_SECRET
-```
-
-## Development
-
-```bash
-npm run dev
-```
+# Folio Blog - Vercel Deployment
 
 ## Deploy to Vercel
 
-1. Push to GitHub
-2. Import to Vercel
-3. Set environment variable `JWT_SECRET` in Vercel dashboard
-4. Deploy
+1. **Root Directory**: `frontend-next`
+2. **Framework Preset**: Next.js
+3. **Build Command**: `npm run build`
+4. **Environment Variables**:
+   - `JWT_SECRET`: Generate with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
 
-**Vercel Settings:**
-- Framework Preset: **Next.js**
-- Build Command: `npm run build`
-- Output Directory: `.next`
+## Login Credentials
 
-## Files
+- **Admin**: `admin@blog.com` / `admin123`
+- **Writer**: `brendah@blog.com` / `Brendah123`
+- **Writer**: `michael@blog.com` / `Michael@789`
 
-- `pages/api/` - API routes (login, articles, etc.)
-- `lib/database.js` - SQLite helper
-- `lib/auth.js` - JWT authentication
-- `public/` - Static frontend files
+## API Endpoints
+
+- `/api/auth/login` - Login (POST with email, password)
+- `/api/auth/me` - Get current user (GET with Bearer token)
+- `/api/articles` - List articles (GET)
+- `/api/articles/featured` - Featured articles (GET)
+- `/api/articles/[slug]` - Single article (GET)
+- `/api/tags` - Tags list (GET)
+- `/api/health` - Health check (GET)

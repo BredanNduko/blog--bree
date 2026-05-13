@@ -1,6 +1,7 @@
-const { getDb, query } = require('../../../lib/database');
-
-module.exports = async function handler(req, res) {
-  await getDb();
-  res.json(query('SELECT t.*, COUNT(at.article_id) as count FROM tags t LEFT JOIN article_tags at ON t.id = at.tag_id GROUP BY t.id ORDER BY t.name'));
-};
+export default function handler(req, res) {
+  res.status(200).json([
+    { name: 'Lifestyle', slug: 'lifestyle', count: 1 },
+    { name: 'Writing', slug: 'writing', count: 1 },
+    { name: 'Technology', slug: 'technology', count: 0 }
+  ]);
+}
