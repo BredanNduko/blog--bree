@@ -213,18 +213,39 @@ Generate a JWT secret:
 node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-### Production Checklist
+### Docker Deployment
 
-- [ ] Change default admin password
-- [ ] Set a strong `JWT_SECRET` in `backend/.env`
-- [ ] Point `FRONTEND_URL` to your actual domain
-- [ ] Use a reverse proxy (nginx) in front of both servers
-- [ ] Enable HTTPS
-- [ ] Back up `backend/blog.db` regularly
-- [ ] Consider moving uploads to S3 for persistence
+**Quick start:**
+```bash
+# Generate strong JWT secret
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+
+# Create and configure .env
+cp backend/.env.example backend/.env
+# Edit backend/.env and set JWT_SECRET
+
+# Build and run
+docker-compose up -d
+```
+
+**Files created:**
+- `Dockerfile` - Main application container
+- `docker-compose.yml` - Orchestration with volume persistence
+- `backend/Dockerfile` - Backend-only container (alternative)
+- `frontend/Dockerfile` - Frontend-only container (alternative)
+- `.dockerignore` - Build exclusions
+
+**After deployment:**
+- Blog: `http://localhost:3000`
+- Admin: `http://localhost:3000/admin.html`
+
+**Persisted data:**
+- Database: Docker volume `blog-db`
+- Uploads: Docker volume `blog-uploads`
+
+**Alternative (separate containers):**
+```bash
+docker-compose -f docker-compose.yml up -d  # or use the multi-container version
+```
 
 ---
-
-## Go Backend Version
-
-This is the **JavaScript/Node.js** version. The Go version (using Gin + GORM) has identical API contracts and database schema — only the server implementation differs.

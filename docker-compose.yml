@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: folio-app
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - blog-db:/app/backend/blog.db
+      - blog-uploads:/app/frontend/public/uploads
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+
+volumes:
+  blog-db:
+  blog-uploads:
