@@ -2,17 +2,20 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy and install dependencies
+# Copy and install backend dependencies only
 COPY backend/package*.json ./backend/
-COPY frontend/package*.json ./frontend/
-RUN cd backend && npm ci && \
-    cd ../frontend && npm ci
+RUN cd backend && npm ci --only=production
 
 # Copy application code
 COPY backend/ ./backend/
-COPY frontend/ ./frontend/
-COPY start.js .
+COPY frontend/public ./frontend/public/
 
-EXPOSE 3000 3001
+# Production image
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/backend ./backend
+COPY --from=builder /app/frontend/public ./frontend/public
+
 ENV NODE_ENV=production
-CMD ["node", "start.js"]
+EXPOSE 3001
+CMD ["node", "backend/server.js"]
