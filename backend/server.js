@@ -27,21 +27,21 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/uploads')));
 
-// ── ROUTES ────────────────────────────────────────────────────────────────────
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/articles', require('./routes/articles'));
-app.use('/api/upload', require('./routes/upload'));
-
-// Health check
-app.get('/api/health', (req, res) => {
+// ── API ROUTES (MUST come before static frontend) ─────────────────────────────
+const apiRouter = express.Router();
+apiRouter.use('/auth', require('./routes/auth'));
+apiRouter.use('/articles', require('./routes/articles'));
+apiRouter.use('/upload', require('./routes/upload'));
+apiRouter.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+app.use('/api', apiRouter);
 
 // Serve frontend static files (spa)
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
-// SPA fallback — all non-API routes return index.html
-app.get(/.*/, (req, res) => {
+// SPA fallback — catch all non-API routes (must be AFTER all other routes)
+app.get('/{*path}', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
