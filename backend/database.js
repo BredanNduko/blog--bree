@@ -24,6 +24,9 @@ async function getDb() {
   } else {
     db = new SQL.Database();
   }
+  
+  // Enable foreign key constraints
+  db.run('PRAGMA foreign_keys = ON;');
 
   initSchema();
   return db;
