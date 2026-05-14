@@ -1,4 +1,4 @@
-const API_BASE = 'https://stalkquils.onrender.com/api';
+const API_BASE = 'http://localhost:3001/api';
 
 const api = {
   _token: null,
