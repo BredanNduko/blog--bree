@@ -17,7 +17,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://stalkquils.onrender.com',
+  origin: true,
   credentials: true
 }));
 app.use(morgan('dev'));
