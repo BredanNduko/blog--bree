@@ -41,7 +41,7 @@ app.get('/api/health', (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 // SPA fallback — all non-API routes return index.html
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
