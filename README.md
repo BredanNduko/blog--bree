@@ -74,12 +74,6 @@ cd frontend && npm start
 
 ### 4. Open
 
-| URL | Description |
-|-----|-------------|
-| `http://localhost:3000` | Public blog |
-| `http://localhost:3000/admin.html` | Admin panel (hidden) |
-| `http://localhost:3001/api` | REST API |
-
 ---
 
 ## Default Login
