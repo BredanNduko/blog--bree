@@ -204,10 +204,14 @@ async function seedSampleArticles(authorId) {
 }
 
 // ── START ─────────────────────────────────────────────────────────────────────
+const HOSTNAME = process.env.HOSTNAME || 'localhost';
+const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+const BASE_URL = process.env.BASE_URL || `${PROTOCOL}://${HOSTNAME}`;
+
 seedAdmin().then(() => {
   app.listen(PORT, () => {
-    console.log(`🚀  Backend running at http://localhost:${PORT}`);
-    console.log(`📖  API base: http://localhost:${PORT}/api`);
+    console.log(`🚀  Backend running at ${PROTOCOL}://${HOSTNAME}:${PORT}`);
+    console.log(`📖  API base: ${PROTOCOL}://${HOSTNAME}/api`);
   });
 }).catch(err => {
   console.error('Failed to start:', err);

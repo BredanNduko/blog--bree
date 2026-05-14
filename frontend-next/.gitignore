@@ -1,7 +1,0 @@
-[*.log]
-node_modules/
-.git/
-*.db
-.env*
-.next/
-.vercel/
