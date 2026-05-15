@@ -46,15 +46,53 @@ function doLogout() {
   currentUser = null;
   document.getElementById('admin-app').classList.remove('visible');
   document.getElementById('login-screen').style.display = 'flex';
+  closeMobileSidebar();
 }
+
+// ── MOBILE SIDEBAR ──────────────────────────────────────────────────────────────
+const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+const sidebarToggle = document.getElementById('sidebarToggle');
+
+function openMobileSidebar() {
+  mobileSidebarOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileSidebar() {
+  mobileSidebarOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    if (mobileSidebarOverlay.classList.contains('open')) closeMobileSidebar();
+    else openMobileSidebar();
+  });
+}
+
+mobileSidebarOverlay.addEventListener('click', (e) => {
+  if (e.target === mobileSidebarOverlay) closeMobileSidebar();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileSidebarOverlay.classList.contains('open')) {
+    closeMobileSidebar();
+  }
+});
 
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').classList.add('visible');
 
   if (currentUser) {
-    document.getElementById('sidebarName').textContent = currentUser.display_name;
-    document.getElementById('sidebarAvatar').textContent = (currentUser.display_name || 'A').charAt(0).toUpperCase();
+    const name = currentUser.display_name;
+    const initial = (name || 'A').charAt(0).toUpperCase();
+    // Desktop sidebar
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('sidebarAvatar').textContent = initial;
+    // Mobile sidebar
+    document.getElementById('sidebarNameMobile').textContent = name;
+    document.getElementById('sidebarAvatarMobile').textContent = initial;
   }
 
   showDashboard();

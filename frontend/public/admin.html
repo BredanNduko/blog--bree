@@ -111,19 +111,67 @@
         </div>
       </aside>
 
-      <!-- MAIN -->
-      <div class="admin-main">
-        <div class="admin-topbar">
-          <div class="topbar-title" id="topbarTitle">Dashboard</div>
-          <div class="topbar-actions" id="topbarActions"></div>
-        </div>
-        <div class="admin-content" id="adminContent">
-          <div class="admin-loading"><div class="spinner"></div> Loading…</div>
-        </div>
-      </div>
+       <!-- MAIN -->
+       <div class="admin-main">
+         <div class="admin-topbar">
+           <div class="topbar-left">
+             <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+               </svg>
+             </button>
+             <div class="topbar-title" id="topbarTitle">Dashboard</div>
+           </div>
+           <div class="topbar-actions" id="topbarActions"></div>
+         </div>
+         <div class="admin-content" id="adminContent">
+           <div class="admin-loading"><div class="spinner"></div> Loading…</div>
+         </div>
+       </div>
 
-    </div>
-  </div>
+     </div>
+   </div>
+
+   <!-- Mobile Sidebar Overlay -->
+   <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay">
+     <aside class="sidebar mobile-sidebar" id="mobileSidebar">
+       <div class="sidebar-header">
+         <span class="sidebar-logo">Stalk Quil</span>
+         <span class="sidebar-badge">Admin</span>
+       </div>
+       <nav class="sidebar-nav">
+         <div class="sidebar-section-label">Content</div>
+         <div class="sidebar-link active" id="nav-dashboard-mobile" onclick="showDashboard(); closeMobileSidebar()">
+           Dashboard
+         </div>
+         <div class="sidebar-link" id="nav-articles-mobile" onclick="showArticles(); closeMobileSidebar()">
+           Articles
+         </div>
+         <div class="sidebar-link" id="nav-new-mobile" onclick="showEditor(); closeMobileSidebar()">
+           New Article
+         </div>
+         <div class="sidebar-section-label">Account</div>
+         <div class="sidebar-link" id="nav-settings-mobile" onclick="showSettings(); closeMobileSidebar()">
+           Settings
+         </div>
+         <a class="sidebar-link" href="/" target="_blank" onclick="closeMobileSidebar()">
+           View Blog
+         </a>
+       </nav>
+       <div class="sidebar-footer">
+         <div class="sidebar-user">
+           <div class="sidebar-avatar" id="sidebarAvatarMobile">A</div>
+           <div>
+             <div class="sidebar-user-name" id="sidebarNameMobile">Admin</div>
+             <div class="sidebar-user-role">Administrator</div>
+           </div>
+         </div>
+         <button class="btn btn-ghost btn-full" onclick="doLogout(); closeMobileSidebar()" style="justify-content:flex-start;gap:8px;font-size:13px;color:var(--text-3)">
+           Sign Out
+         </button>
+       </div>
+     </aside>
+   </div>
 
   <!-- CONFIRM MODAL -->
   <div class="modal-backdrop" id="confirmModal">

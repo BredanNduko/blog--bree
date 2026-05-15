@@ -289,10 +289,29 @@ input, textarea, select { font-family: var(--sans); }
   z-index: 40;
 }
 
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.sidebar-toggle {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  color: var(--text-2);
+  border-radius: var(--radius);
+}
+.sidebar-toggle:hover { color: var(--text); background: var(--bg-3); }
+
 .topbar-title {
   font-size: 16px;
   font-weight: 500;
 }
+
+.sidebar-toggle {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  color: var(--text-2);
+  border-radius: var(--radius);
+}
+.sidebar-toggle:hover { color: var(--text); background: var(--bg-3); }
 
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
 
@@ -724,4 +743,43 @@ tr:hover td { background: var(--bg-3); }
   .sidebar.open { transform: translateX(0); }
   .admin-main { margin-left: 0; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Show sidebar toggle on mobile */
+  .sidebar-toggle { display: flex; }
+
+  /* Mobile sidebar overlay */
+  .mobile-sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(14,13,12,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .mobile-sidebar-overlay.open { display: block; opacity: 1; }
+
+  .mobile-sidebar {
+    width: min(280px, 80vw);
+    height: 100%;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .mobile-sidebar-overlay.open .mobile-sidebar { transform: translateX(0); }
+
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-title { font-size: 15px; }
+  .admin-topbar { padding: 0 16px; }
+  .admin-content { padding: 20px 16px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .sidebar-link { padding: 10px 12px; font-size: 13px; }
+  .sidebar-footer { padding: 12px; }
+  .sidebar-user { padding: 6px; }
 }

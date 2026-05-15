@@ -72,6 +72,44 @@ window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
 }, { passive: true });
 
+// ── MOBILE MENU ─────────────────────────────────────────────────────────────────
+const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenuClose = document.getElementById('mobileMenuClose');
+const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+function openMobileMenu() {
+  mobileMenuOverlay.classList.add('open');
+  menuToggle.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('menu-open');
+}
+
+function closeMobileMenu() {
+  mobileMenuOverlay.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('menu-open');
+}
+
+menuToggle.addEventListener('click', () => {
+  if (mobileMenuOverlay.classList.contains('open')) closeMobileMenu();
+  else openMobileMenu();
+});
+
+mobileMenuClose.addEventListener('click', closeMobileMenu);
+mobileMenuOverlay.addEventListener('click', (e) => {
+  if (e.target === mobileMenuOverlay) closeMobileMenu();
+});
+
+mobileNavLinks.forEach(link => {
+  link.addEventListener('click', closeMobileMenu);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenuOverlay.classList.contains('open')) {
+    closeMobileMenu();
+  }
+});
+
 // ── FOOTER TAGS ───────────────────────────────────────────────────────────────
 async function loadFooterTags() {
   try {
