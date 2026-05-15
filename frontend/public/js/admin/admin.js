@@ -524,7 +524,7 @@ async function uploadCover(e) {
 
   try {
     const res = await api.uploadImage(file);
-     const url = `https://stalkquill.onrender.com${res.url}`;
+    const url = `${window.location.origin}${res.url}`;
     document.getElementById('coverImageUrl').value = url;
     preview.innerHTML = `<img id="coverPreviewImg" src="${url}" alt="Cover">`;
     toast('Image uploaded', 'success');
