@@ -1,5 +1,5 @@
 /**
- * Folio Blog Platform — Start Script
+ * Stalk Quil Blog Platform — Start Script
  * Boots backend (port 3001) and frontend (port 3000) concurrently.
  */
 const { spawn } = require('child_process');
@@ -40,7 +40,7 @@ function start(name, cmd, args, cwd, color) {
 }
 
 console.log(`\n${CYAN}╔════════════════════════════════════╗`);
-console.log(`║         FOLIO BLOG PLATFORM        ║`);
+console.log(`║       STALK QUIL BLOG PLATFORM     ║`);
 console.log(`╚════════════════════════════════════╝${RESET}\n`);
 
 start('API',      'node', ['server.js'], 'backend',  GREEN);

@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: folio-app
+    container_name: stalk-quil-app
     restart: unless-stopped
     env_file:
       - ./backend/.env

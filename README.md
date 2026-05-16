@@ -1,4 +1,4 @@
-# Folio — Blog Platform (JavaScript / Node.js)
+# Stalk Quil — Blog Platform (JavaScript / Node.js)
 
 A production-ready blog platform with a beautiful reader-facing UI and a hidden admin panel for writing, editing, and managing articles.
 

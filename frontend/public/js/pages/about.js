@@ -18,7 +18,7 @@ async function renderAbout() {
         <div class="about-bio">
           ${user.bio
             ? user.bio.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('')
-            : `<p>Welcome to Folio — a place for writing that matters. Here you'll find essays, reflections, and stories on the things that shape how we live, think, and create.</p>
+            : `<p>Welcome to Stalk Quil — a place for writing that matters. Here you'll find essays, reflections, and stories on the things that shape how we live, think, and create.</p>
                <p>This blog exists because words need a home. Because some ideas deserve more than a tweet. Because reading slowly is a form of resistance.</p>`
           }
         </div>
