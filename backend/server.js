@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
-const { getDb, queryOne, run } = require('./database');
+const { getDb, query, queryOne, run, initSchema } = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
