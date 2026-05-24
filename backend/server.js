@@ -59,30 +59,30 @@ app.use((err, req, res, next) => {
 
 // ── SEED ──────────────────────────────────────────────────────────────────────
 async function seedAdmin() {
-  await getDb(); // ensure DB is initialized
+  await getDb();
+  await initSchema();
 
-  const existingAdmin = queryOne('SELECT id FROM users WHERE email = ?', ['admin@blog.com']);
+  const existingAdmin = await queryOne('SELECT id FROM users WHERE email = $1', ['admin@blog.com']);
   if (!existingAdmin) {
     const hash = await bcrypt.hash('admin123', 12);
     const id = uuidv4();
-    run(
-      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES (?, ?, ?, ?, ?, ?)',
+    await run(
+      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES ($1, $2, $3, $4, $5, $6)',
       [id, 'admin@blog.com', hash, 'The Author', 'Writer, thinker, creator.', 'admin']
     );
     console.log('\n✅  Admin user seeded');
     console.log('   Email:    admin@blog.com');
     console.log('   Password: admin123');
 
-    // Seed sample articles
     await seedSampleArticles(id);
   }
 
-  const existingBrendah = queryOne('SELECT id FROM users WHERE email = ?', ['brendah@blog.com']);
+  const existingBrendah = await queryOne('SELECT id FROM users WHERE email = $1', ['brendah@blog.com']);
   if (!existingBrendah) {
     const brendahHash = await bcrypt.hash('Brendah123', 12);
     const brendahId = uuidv4();
-    run(
-      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES (?, ?, ?, ?, ?, ?)',
+    await run(
+      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES ($1, $2, $3, $4, $5, $6)',
       [brendahId, 'brendah@blog.com', brendahHash, 'Brendah', 'Content creator and writer.', 'writer']
     );
     console.log('✅  Brendah user seeded');
@@ -90,12 +90,12 @@ async function seedAdmin() {
     console.log('   Password: Brendah123\n');
   }
 
-  const existingMichael = queryOne('SELECT id FROM users WHERE email = ?', ['michael@blog.com']);
+  const existingMichael = await queryOne('SELECT id FROM users WHERE email = $1', ['michael@blog.com']);
   if (!existingMichael) {
     const michaelHash = await bcrypt.hash('Michael@789', 12);
     const michaelId = uuidv4();
-    run(
-      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES (?, ?, ?, ?, ?, ?)',
+    await run(
+      'INSERT INTO users (id, email, password_hash, display_name, bio, role) VALUES ($1, $2, $3, $4, $5, $6)',
       [michaelId, 'michael@blog.com', michaelHash, 'Michael Chen', 'Technology and business writer.', 'writer']
     );
     console.log('✅  Michael user seeded');
@@ -191,9 +191,9 @@ async function seedSampleArticles(authorId) {
     const words = a.body.replace(/<[^>]+>/g, '').split(/\s+/).length;
     const readTime = Math.max(1, Math.ceil(words / 200));
 
-    run(
+    await run(
       `INSERT INTO articles (id, author_id, title, slug, excerpt, body, cover_image, status, read_time, views, created_at, updated_at, published_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
       [id, authorId, a.title, slug, a.excerpt, a.body, a.cover_image, 'published', readTime, Math.floor(Math.random() * 500) + 50, now, now, now]
     );
 
@@ -201,13 +201,13 @@ async function seedSampleArticles(authorId) {
     const { v4: uuid } = require('uuid');
     for (const tagName of a.tags) {
       const tagSlug = tagName.toLowerCase();
-      let tag = queryOne('SELECT * FROM tags WHERE slug = ?', [tagSlug]);
+      let tag = await queryOne('SELECT * FROM tags WHERE slug = $1', [tagSlug]);
       if (!tag) {
         const tagId = uuid();
-        run('INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)', [tagId, tagName, tagSlug]);
+        await run('INSERT INTO tags (id, name, slug) VALUES ($1, $2, $3)', [tagId, tagName, tagSlug]);
         tag = { id: tagId };
       }
-      try { run('INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)', [id, tag.id]); } catch (_) {}
+      try { await run('INSERT INTO article_tags (article_id, tag_id) VALUES ($1, $2)', [id, tag.id]); } catch (_) {}
     }
   }
 

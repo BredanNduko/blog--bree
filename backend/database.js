@@ -1,39 +1,40 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
+const { Pool } = require('pg');
 
-const DB_PATH = path.join(__dirname, 'blog.db');
+const DATABASE_URL = process.env.DATABASE_URL || `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || ''}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'blog_bree'}`;
 
-let db = null;
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { require: true, rejectUnauthorized: false } : undefined,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000
+});
 
-function saveDb() {
-  if (db) {
-    const data = db.export();
-    fs.writeFileSync(DB_PATH, Buffer.from(data));
-  }
-}
+pool.on('error', (err) => {
+  console.error('PostgreSQL pool error:', err);
+});
 
 async function getDb() {
-  if (db) return db;
-
-  const SQL = await initSqlJs();
-
-  if (fs.existsSync(DB_PATH)) {
-    const fileBuffer = fs.readFileSync(DB_PATH);
-    db = new SQL.Database(fileBuffer);
-  } else {
-    db = new SQL.Database();
-  }
-  
-  // Enable foreign key constraints
-  db.run('PRAGMA foreign_keys = ON;');
-
-  initSchema();
-  return db;
+  return pool;
 }
 
-function initSchema() {
-  db.run(`
+async function query(sql, params = []) {
+  const result = await pool.query(sql, params);
+  return result.rows;
+}
+
+async function queryOne(sql, params = []) {
+  const rows = await query(sql, params);
+  return rows[0] || null;
+}
+
+async function run(sql, params = []) {
+  await pool.query(sql, params);
+}
+
+// Initialize schema
+async function initSchema() {
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -42,11 +43,11 @@ function initSchema() {
       bio TEXT DEFAULT '',
       avatar_url TEXT DEFAULT '',
       role TEXT DEFAULT 'admin',
-      created_at TEXT DEFAULT (datetime('now'))
+      created_at TIMESTAMP DEFAULT NOW()
     )
   `);
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS articles (
       id TEXT PRIMARY KEY,
       author_id TEXT NOT NULL,
@@ -58,14 +59,14 @@ function initSchema() {
       status TEXT DEFAULT 'draft',
       read_time INTEGER DEFAULT 0,
       views INTEGER DEFAULT 0,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now')),
-      published_at TEXT,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW(),
+      published_at TIMESTAMP,
       FOREIGN KEY (author_id) REFERENCES users(id)
     )
   `);
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS tags (
       id TEXT PRIMARY KEY,
       name TEXT UNIQUE NOT NULL,
@@ -73,7 +74,7 @@ function initSchema() {
     )
   `);
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS article_tags (
       article_id TEXT NOT NULL,
       tag_id TEXT NOT NULL,
@@ -82,32 +83,6 @@ function initSchema() {
       FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
     )
   `);
-
-  saveDb();
 }
 
-// Helper: run a query and return all rows as objects
-function query(sql, params = []) {
-  const stmt = db.prepare(sql);
-  stmt.bind(params);
-  const rows = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject());
-  }
-  stmt.free();
-  return rows;
-}
-
-// Helper: run a single row query
-function queryOne(sql, params = []) {
-  const rows = query(sql, params);
-  return rows[0] || null;
-}
-
-// Helper: run insert/update/delete
-function run(sql, params = []) {
-  db.run(sql, params);
-  saveDb();
-}
-
-module.exports = { getDb, query, queryOne, run, saveDb };
+module.exports = { getDb, query, queryOne, run, initSchema };

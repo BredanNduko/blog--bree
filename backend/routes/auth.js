@@ -18,7 +18,7 @@ router.post('/login', [
   const { email, password } = req.body;
 
   try {
-    const user = queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    const user = await queryOne('SELECT * FROM users WHERE email = $1', [email]);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -48,9 +48,9 @@ router.post('/login', [
 });
 
 // GET /api/auth/me
-router.get('/me', requireAuth, (req, res) => {
+router.get('/me', requireAuth, async (req, res) => {
   try {
-    const user = queryOne('SELECT id, email, display_name, bio, avatar_url, role FROM users WHERE id = ?', [req.user.id]);
+    const user = await queryOne('SELECT id, email, display_name, bio, avatar_url, role FROM users WHERE id = $1', [req.user.id]);
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ user });
   } catch (err) {
@@ -70,7 +70,7 @@ router.post('/update-profile', requireAuth, [
 
   const { display_name, bio } = req.body;
   try {
-    run('UPDATE users SET display_name = ?, bio = ? WHERE id = ?', [display_name, bio || '', req.user.id]);
+    await run('UPDATE users SET display_name = $1, bio = $2 WHERE id = $3', [display_name, bio || '', req.user.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -89,12 +89,12 @@ router.post('/change-password', requireAuth, [
 
   const { current_password, new_password } = req.body;
   try {
-    const user = queryOne('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    const user = await queryOne('SELECT * FROM users WHERE id = $1', [req.user.id]);
     const valid = await bcrypt.compare(current_password, user.password_hash);
     if (!valid) return res.status(401).json({ error: 'Current password incorrect' });
 
     const hash = await bcrypt.hash(new_password, 12);
-    run('UPDATE users SET password_hash = ? WHERE id = ?', [hash, req.user.id]);
+    await run('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, req.user.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });

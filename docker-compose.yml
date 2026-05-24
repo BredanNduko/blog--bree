@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: blog-bree-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blog_bree
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   app:
     build:
       context: .
@@ -11,13 +29,20 @@ services:
       - ./backend/.env
     environment:
       - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=blog_bree
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
-      - blog-db:/app/backend/blog.db
       - blog-uploads:/app/frontend/public/uploads
     ports:
       - "3000:3000"
       - "3001:3001"
 
 volumes:
-  blog-db:
+  postgres_data:
   blog-uploads:
