@@ -40,8 +40,13 @@ app.use('/api', apiRouter);
 // Serve frontend static files (spa)
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
+// Admin route (for /admin, serve admin.html)
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/admin.html'));
+});
+
 // SPA fallback — catch all non-API routes (must be AFTER all other routes)
-app.get('/{*path}', (req, res) => {
+app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }

@@ -2,9 +2,19 @@ const { Pool } = require('pg');
 
 const DATABASE_URL = process.env.DATABASE_URL || `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || ''}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'blog_bree'}`;
 
+// Determine SSL configuration
+let sslConfig;
+if (process.env.DATABASE_URL) {
+  // For managed services like Render, enable SSL with relaxed validation
+  sslConfig = { rejectUnauthorized: false };
+} else {
+  // For local development (including Docker-compose), disable SSL
+  sslConfig = false;
+}
+
 const pool = new Pool({
   connectionString: DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { require: true, rejectUnauthorized: false } : undefined,
+  ssl: sslConfig,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000
